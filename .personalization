@@ -1,0 +1,6 @@
+# Current personalisation values. Maintained by scripts/personalize.sh - do not edit by hand.
+P_FIRST='Dmitriy'
+P_LAST='Boyarkin'
+P_GROUP='IT2-2312'
+P_EMAIL='john.doe556@tutamail.com'
+P_GH='ManulProgramming'
