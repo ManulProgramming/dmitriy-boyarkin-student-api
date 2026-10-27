@@ -24,6 +24,7 @@ dmitriy-boyarkin-student-api/
 |--------|-----|-------------|
 | GET | `/api/info` | Student name and application version |
 | GET | `/api/students` | List all students |
+| GET | `/api/students/search?lastName=` | Case-insensitive surname search (added by Dmitriy Boyarkin) |
 | GET | `/api/students/{id}` | One student (404 JSON if missing) |
 | POST | `/api/students` | Create (201, validated) |
 | PUT | `/api/students/{id}` | Update |
@@ -48,4 +49,5 @@ gradle test        # or ./gradlew test after generating the wrapper (see docs/JE
 Tests use an in-memory H2 database (profile `test`), so no PostgreSQL is needed.
 
 ## Change log
+* feature/dmitriy-boyarkin-crud - Dmitriy Boyarkin added `GET /api/students/search?lastName=` (repository query, controller method, integration test).
 * v1.0-dmitriy-boyarkin - initial CRUD API, Docker, Jenkins pipeline.
