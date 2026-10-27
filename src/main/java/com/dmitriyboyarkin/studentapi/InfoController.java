@@ -13,6 +13,9 @@ public class InfoController {
     @Value("${app.student-name}")
     private String studentName;
 
+    @Value("${app.student-group}")
+    private String studentGroup;
+
     @Value("${app.version}")
     private String version;
 
@@ -23,6 +26,7 @@ public class InfoController {
     public Map<String, String> info() {
         Map<String, String> m = new LinkedHashMap<>();
         m.put("student", studentName);
+        m.put("group", studentGroup);
         m.put("application", applicationName);
         m.put("version", version);
         return m;

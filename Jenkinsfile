@@ -19,6 +19,7 @@ pipeline {
 
     environment {
         STUDENT_NAME = 'Dmitriy Boyarkin'
+        STUDENT_GROUP = 'IT2-2312'
         IMAGE_NAME   = 'dmitriy-boyarkin-student-api'
         IMAGE_TAG    = 'v1.0-dmitriy-boyarkin'
     }
@@ -26,7 +27,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo "Student: ${STUDENT_NAME} - stage Checkout"
+                echo "Student: ${STUDENT_NAME} (${STUDENT_GROUP}) - stage Checkout"
                 checkout scm
                 sh 'git log -1 --pretty=format:"Commit: %h %s (%an)"'
             }
@@ -34,7 +35,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "Student: ${STUDENT_NAME} - stage Build"
+                echo "Student: ${STUDENT_NAME} (${STUDENT_GROUP}) - stage Build"
                 sh '''
                     if [ -f ./gradlew ]; then chmod +x ./gradlew; G=./gradlew; else G=gradle; fi
                     $G clean bootJar --no-daemon
@@ -44,7 +45,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo "Student: ${STUDENT_NAME} - stage Test"
+                echo "Student: ${STUDENT_NAME} (${STUDENT_GROUP}) - stage Test"
                 sh '''
                     if [ -f ./gradlew ]; then G=./gradlew; else G=gradle; fi
                     $G test --no-daemon
@@ -59,14 +60,14 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                echo "Student: ${STUDENT_NAME} - building ${IMAGE_NAME}:${IMAGE_TAG}"
+                echo "Student: ${STUDENT_NAME} (${STUDENT_GROUP}) - building ${IMAGE_NAME}:${IMAGE_TAG}"
                 sh 'docker build --build-arg APP_VERSION=${IMAGE_TAG} -t ${IMAGE_NAME}:${IMAGE_TAG} .'
             }
         }
 
         stage('Verify') {
             steps {
-                echo "Student: ${STUDENT_NAME} - stage Verify"
+                echo "Student: ${STUDENT_NAME} (${STUDENT_GROUP}) - stage Verify"
                 sh '''
                     if docker image inspect ${IMAGE_NAME}:${IMAGE_TAG} >/dev/null 2>&1; then
                         echo "VERIFY OK: image ${IMAGE_NAME}:${IMAGE_TAG} exists"

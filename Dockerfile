@@ -14,10 +14,12 @@ RUN gradle bootJar --no-daemon -x test
 FROM eclipse-temurin:17-jre-alpine
 ARG APP_VERSION=v1.0-dmitriy-boyarkin
 LABEL maintainer="Dmitriy Boyarkin" \
+      student.group="IT2-2312" \
       org.opencontainers.image.title="dmitriy-boyarkin-student-api" \
       org.opencontainers.image.version="${APP_VERSION}"
 ENV APP_VERSION=${APP_VERSION} \
     APP_STUDENT_NAME="Dmitriy Boyarkin" \
+    APP_STUDENT_GROUP="IT2-2312" \
     SERVER_PORT=8080
 RUN addgroup -S app && adduser -S app -G app
 WORKDIR /app

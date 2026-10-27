@@ -7,6 +7,7 @@
 set -u
 
 STUDENT_NAME="Dmitriy Boyarkin"
+STUDENT_GROUP="IT2-2312"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="${SCRIPT_DIR}/../logs/Dmitriy_Boyarkin_system_report.log"
 mkdir -p "$(dirname "$LOG_FILE")"
@@ -18,6 +19,7 @@ report() {
   echo " SYSTEM REPORT"
   echo "=============================================================="
   echo "Student full name : ${STUDENT_NAME}"
+  echo "Student group     : ${STUDENT_GROUP}"
   echo "Date and time     : $(date '+%Y-%m-%d %H:%M:%S %Z')"
   echo "Current username  : $(whoami)"
   echo "Hostname          : $(hostname)"

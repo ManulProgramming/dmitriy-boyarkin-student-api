@@ -36,6 +36,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-dmitriy_boyarkin_user}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       APP_STUDENT_NAME: Dmitriy Boyarkin
+      APP_STUDENT_GROUP: IT2-2312
       APP_VERSION: ${APP_VERSION:-v1.0-dmitriy-boyarkin}
       SERVER_PORT: "8080"
     ports:
