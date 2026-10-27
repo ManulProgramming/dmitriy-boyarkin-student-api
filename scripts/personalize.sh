@@ -4,7 +4,7 @@
 #
 # Replaces the current student's name, group, e-mail and GitHub user in
 #   * file CONTENTS   (Java package, Dockerfile, Compose, Jenkinsfile, scripts, docs, logs ...)
-#   * file and directory NAMES   (Dmitriy_Boyarkin_system_report.sh -> First_Last_system_report.sh,
+#   * file and directory NAMES   (<Old>_<Name>_system_report.sh -> First_Last_system_report.sh,
 #                                 src/main/java/com/<oldslug> -> com/<newslug>)
 #   * Git: user.name / user.email, branch names, release tag, remote URL, and
 #     optionally the COMMIT HISTORY (--rewrite-history).
@@ -117,6 +117,8 @@ rule "${OF_L}.${OL_L}"   "${NF_L}.${NL_L}"               # e-mail style
 rule "${OF_L}${OL_L}"    "${NF_L}${NL_L}"                # Java package / group id
 rule "$OF_T" "$N_FIRST_D"; rule "$OL_T" "$N_LAST_D"      # single words
 rule "$OF_L" "$NF_L";      rule "$OL_L" "$NL_L"
+rule "${OF_L^^}_${OL_L^^}" "${NF_L^^}_${NL_L^^}"         # upper-case forms (constants, test input)
+rule "${OF_L^^}" "${NF_L^^}"; rule "${OL_L^^}" "${NL_L^^}"
 if [ "$OLD_INI" != "$NEW_INI" ]; then                    # student-code prefix, e.g. DB-2026-001
   n=$((n+1)); echo "s|\\b${OLD_INI}-|@@P${n}@@|g" >> "$SEDA"; echo "s|@@P${n}@@|${NEW_INI}-|g" >> "$SEDB"
 fi
