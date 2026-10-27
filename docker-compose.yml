@@ -1,0 +1,54 @@
+# Compose project of Dmitriy Boyarkin: Spring Boot Student API + PostgreSQL
+name: dmitriy-boyarkin-student-api
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: dmitriy-boyarkin-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dmitriy_boyarkin_students}
+      POSTGRES_USER: ${POSTGRES_USER:-dmitriy_boyarkin_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (see .env.example)}
+    volumes:
+      - dmitriy_boyarkin_pgdata:/var/lib/postgresql/data
+    networks:
+      - dmitriy_boyarkin_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      args:
+        APP_VERSION: ${APP_VERSION:-v1.0-dmitriy-boyarkin}
+    image: dmitriy-boyarkin-student-api:${APP_VERSION:-v1.0-dmitriy-boyarkin}
+    container_name: dmitriy-boyarkin-student-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Host name is the Compose service name "db", not localhost.
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-dmitriy_boyarkin_students}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-dmitriy_boyarkin_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_STUDENT_NAME: Dmitriy Boyarkin
+      APP_VERSION: ${APP_VERSION:-v1.0-dmitriy-boyarkin}
+      SERVER_PORT: "8080"
+    ports:
+      - "${APP_PORT:-8081}:8080"
+    networks:
+      - dmitriy_boyarkin_net
+    restart: unless-stopped
+
+volumes:
+  dmitriy_boyarkin_pgdata:
+    name: dmitriy_boyarkin_pgdata
+
+networks:
+  dmitriy_boyarkin_net:
+    name: dmitriy_boyarkin_net
+    driver: bridge

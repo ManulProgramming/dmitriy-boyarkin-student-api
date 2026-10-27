@@ -1,0 +1,22 @@
+# Build output
+build/
+.gradle/
+out/
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Secrets and local configuration - NEVER commit
+.env
+*.env
+!.env.example
+*.pem
+*.key
+
+# Logs and OS files
+*.log
+.DS_Store
