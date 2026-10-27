@@ -11,7 +11,8 @@
 #
 # Usage:
 #   ./scripts/personalize.sh --name "First Last" [--group IT-2301] [--email me@uni.kz]
-#                            [--github-user my-login] [--rewrite-history] [--dry-run] [--yes]
+#                            [--github-user my-login] [--rewrite-history] [--commit-pending]
+#                            [--dry-run] [--yes]
 #
 # The order of the two words is kept exactly as typed (First_Last in file names).
 # Current values are stored in .personalization so the script can be re-run.
@@ -57,7 +58,7 @@ ascii() {   # transliterate to plain ASCII letters/digits
 cap() { local s="${1,,}"; printf '%s' "${s^}"; }
 
 # ---------------------------------------------------------------- args ------
-NAME=""; GROUP=""; EMAIL=""; GH=""; REWRITE=0; DRY=0; YES=0
+NAME=""; GROUP=""; EMAIL=""; GH=""; REWRITE=0; DRY=0; YES=0; AUTOC=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --name) NAME="${2:-}"; shift 2;;
@@ -65,6 +66,7 @@ while [ $# -gt 0 ]; do
     --email) EMAIL="${2:-}"; shift 2;;
     --github-user) GH="${2:-}"; shift 2;;
     --rewrite-history) REWRITE=1; shift;;
+    --commit-pending) AUTOC=1; shift;;
     --dry-run) DRY=1; shift;;
     --yes|-y) YES=1; shift;;
     -h|--help) usage 0;;
@@ -152,7 +154,29 @@ OLD_NAME_D="${P_FIRST} ${P_LAST}"
 TAGS_BEFORE=""; [ $HAVE_GIT = 1 ] && TAGS_BEFORE="$(gitc tag -l)"
 
 if [ $HAVE_GIT = 1 ] && [ "$REWRITE" = 1 ]; then
-  gitc diff --quiet && gitc diff --cached --quiet || die "Working tree has uncommitted changes - commit or stash first"
+  if ! gitc diff --quiet || ! gitc diff --cached --quiet; then
+    if [ "$AUTOC" = 1 ]; then
+      gitc add -u; gitc commit -q -m "chore: save pending changes before personalization"
+      echo "Committed pending changes."
+    else
+      echo "ERROR: git sees uncommitted changes in tracked files:" >&2
+      gitc status --short --untracked-files=no >&2
+      echo "--- details (first lines) ---" >&2
+      gitc diff --stat | tail -n 8 >&2
+      cat >&2 <<HINT
+
+How to fix (pick one):
+  1. Keep the changes:        git add -u && git commit -m "my changes"      (or rerun with --commit-pending)
+  2. Park them:               git stash                                      (git stash pop afterwards)
+  3. Throw them away:         git restore .
+  4. Only file-mode changes (diff shows "old mode 100755 / new mode 100644", typical after unzipping):
+                              git config core.fileMode false   then rerun
+  5. Only line-ending changes (Windows, CRLF):
+                              git config core.autocrlf false && git restore .   then rerun
+HINT
+      exit 1
+    fi
+  fi
   cp "$SELF" "$COPY"
   export F_OLD_NAME="$OLD_NAME_D" F_NEW_NAME="$N_FIRST_D $N_LAST_D" F_NEW_EMAIL="$NEW_EMAIL"
   ENVF='for w in AUTHOR COMMITTER; do eval "cur=\$GIT_${w}_NAME"; if [ "$cur" = "$F_OLD_NAME" ]; then export GIT_${w}_NAME="$F_NEW_NAME"; export GIT_${w}_EMAIL="$F_NEW_EMAIL"; fi; done'
