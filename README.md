@@ -3,7 +3,7 @@
 Spring Boot 3 / Java 17 CRUD REST API for students, backed by PostgreSQL, containerised with Docker Compose and built by a Jenkins pipeline.
 
 Author: **Dmitriy Boyarkin**
-Status: Documentation updated by Dmitriy Boyarkin (branch feature/dmitriy-boyarkin-documentation)
+Status: Release candidate v1.0 - documentation updated (Dmitriy Boyarkin)
 
 ## Project structure
 ```
